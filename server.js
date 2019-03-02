@@ -1,5 +1,5 @@
 
-var express			= require('express'),
+var express	= require('express'),
 bodyParser	= require('body-parser'),
 mongoose		= require('mongoose'),
 path        = require('path')
@@ -17,26 +17,43 @@ mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
 
 // document - database table
-var NNSchema = new mongoose.Schema({
-name: {
-type: String,
-required:   [true, "Please enter a name to add."],
-minlength:  [3, "Name must be at least 3 characters"]
-}
-},{ timestamps: true });
-
+var ProductSchema = new mongoose.Schema(
+  {
+    name: {
+    type: String,
+    required:   [true, "Please enter a name to add."],
+    minlength:  [3, "Name must be at least 3 characters"]
+    },
+    description: {
+      type: String,
+      required:  [true, "Please enter a product description to add."],
+      minlength: [4, "Product name must be at least 3 characters in length."]
+    },
+    price: {
+      type: Number,
+      required:  [true, "Please enter a product name to add."],
+      minlength: [3, "Product name must be at least 3 characters in length."]
+    },
+    unit_in_stock: {
+      type: Number,
+      required:  [true, "Please enter a product name to add."],
+      minlength: [3, "Product name must be at least 3 characters in length."]
+    }
+  },
+  { timestamps: true }
+);
 
 
 // MODEL MUST BE NAMED THE SAME BELOW
 // connect to the database 
-mongoose.connect('mongodb://localhost/NNs');
+mongoose.connect('mongodb://localhost/Products');
 
 
-// set up this schema in our Models as 'NN'
-mongoose.model('NN', NNSchema); 
+// set up this schema in our Models as 'Product'
+mongoose.model('Product', ProductSchema); 
 
 // object constructor - we are retrieving this schema from our Models named MM
-let NN = mongoose.model('NN'); 
+let Product = mongoose.model('Product'); 
 
 // use native promises -- uses the promise library to save an object
 mongoose.Promise = global.Promise;
@@ -51,94 +68,93 @@ app.use(express.static( __dirname + '/public/dist/public' ));
 // this gets ignored by express because public/dist/public/index.html exists
 // we told express.static to use that public file instead
 app.get('/index.html', (req, res)=> {
-res.json({message: "this is my app route"});
+  res.json({message: "this is my app route"});
 });
 
-// GETS ALL NNs
-app.get('/api/nns', (req, res)=> {
-NN.find({}, function(err, nns) {
-if (err){
-console.log("There was a problem retrieving all the nns",err);
-res.status(404).json(err);
-}
-else{
-console.log("Got all the nns", nns);
-res.status(200).json({nns: nns});
-}
-})
-});
-
-// CREATE NEW NN
-app.post('/api/nns/add', (req, res)=> {
-let newNN = new NN(req.body);
-console.log("creating a new nn");
-newNN.save((err, added)=> {
-if (err) {
-  console.log("error in creating a new nn", err);
-  res.json({status: false, message: "Create nn", data: err});
-}else{ 
-  console.log('successfully added a nn!');
-  res.json({status: true, message: "Create nn", data: added});
-}
-})
-});
-
-// GET A SINGLE NN
-app.get('/api/nns/:id', (req, res)=> {
-console.log("getting nn by id: ", req.params.id);
-NN.findById(
-req.params.id,
-(err,found)=> {
-  if (err) {
-      console.log("find error: " + err);
+// GETS ALL Products
+app.get('/api/products', (req, res)=> {
+  Product.find({}, function(err, products) {
+    if (err){
+      console.log("There was a problem retrieving all the products",err);
       res.status(404).json(err);
-  }
-  else {
-      console.log("find success")
-      res.status(200).json(found);
-  }
-});
+    } else {
+      console.log("Got all the products", products);
+      res.status(200).json({products: products});
+    }
+  })
 });
 
-// UPDATE NN
-app.put('/api/nns/:id', (req, res) => {
-console.log(`edit`);
-console.log(`about to edit ${req.params.id} to ${req.body.name}`);
-NN.findByIdAndUpdate(
-req.params.id,
-{$set: {name: req.body.name}},
-// mongoose deprecation fix - see
-{ new:true, useFindAndModify:false, 
-  passRawResult: true, runValidators: true 
-}, 
-(err) => {
-  console.log(`findOneAndUpdate complete ${err}`);
+// CREATE NEW Product
+app.post('/api/products/add', (req, res)=> {
+  let newProduct = new Product(req.body);
+  console.log("creating a new product");
+  newProduct.save((err, added)=> {
   if (err) {
-    console.log("error in updating nn");
-    res.json({status: false, message: "Edit NN", data: err});
+    console.log("error in creating a new product", err);
+    res.json({status: false, message: "Create product", data: err});
   }else{ 
-    console.log('successfully updated a nn!');
-    res.json({status: true, message: "Edit NN"});
+    console.log('successfully added a product!');
+    res.json({status: true, message: "Create product", data: added});
   }
-})
+  })
+});
+
+// GET A SINGLE Product
+app.get('/api/products/:id', (req, res)=> {
+  console.log("getting product by id: ", req.params.id);
+  Product.findById(
+    req.params.id,
+    (err,found)=> {
+      if (err) {
+          console.log("find error: " + err);
+          res.status(404).json(err);
+      }
+      else {
+          console.log("find success")
+          res.status(200).json(found);
+      }
+  });
+});
+
+// UPDATE Product
+app.put('/api/products/:id', (req, res) => {
+  console.log(`edit`);
+  console.log(`about to edit ${req.params.id} to ${req.body.name}`);
+  Product.findByIdAndUpdate(
+    req.params.id,
+    {$set: {name: req.body.name}},
+    // mongoose deprecation fix - see
+    { new:true, useFindAndModify:false, 
+      passRawResult: true, runValidators: true 
+    }, 
+    (err) => {
+      console.log(`findOneAndUpdate complete ${err}`);
+      if (err) {
+        console.log("error in updating product");
+        res.json({status: false, message: "Edit Product", data: err});
+      }else{ 
+        console.log('successfully updated a product!');
+        res.json({status: true, message: "Edit Product"});
+      }
+    })
 })
 
-// DELETE NN
-app.delete('/api/nns/:id', (req, res)=> {
-let idToDelete = ObjectId(req.params.id);
-console.log("deleting nn by id: ", idToDelete);
-NN.findByIdAndDelete(idToDelete, (err, deleted)=> {
-console.log("deleted. " + deleted);
-res.status(200).json(deleted);
-});
+// DELETE Product
+app.delete('/api/products/:id', (req, res)=> {
+  let idToDelete = ObjectId(req.params.id);
+  console.log("deleting product by id: ", idToDelete);
+  Product.findByIdAndDelete(idToDelete, (err, deleted)=> {
+    console.log("deleted. " + deleted);
+    res.status(200).json(deleted);
+  });
 });
 
 // this route will be triggered if any of the routes above did not match
 app.all("*", (req,res,next) => {
-res.sendFile(path.resolve("./public/dist/public/index.html"))
+  res.sendFile(path.resolve("./public/dist/public/index.html"))
 });
 
 // tell the express app to listen on port 8001
 app.listen(8001, () => {
-console.log("listening on port 8001");
+  console.log("listening on port 8001");
 });
