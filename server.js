@@ -2,7 +2,13 @@
 var express	= require('express'),
 bodyParser	= require('body-parser'),
 mongoose		= require('mongoose'),
-path        = require('path')
+path        = require('path'),
+multer      = require('multer');
+
+var upload=multer({
+  dest:'src/assets/images/products/'
+  // dest:'uploads/' // this saves your file into a directory  alled uploads
+});
 
 // webserver
 var app				  = express();
@@ -21,23 +27,23 @@ var ProductSchema = new mongoose.Schema(
   {
     name: {
     type: String,
-    required:   [true, "Please enter a name to add."],
+    required:   [true, "Please enter the product name."],
     minlength:  [3, "Name must be at least 3 characters"]
     },
     description: {
       type: String,
-      required:  [true, "Please enter a product description to add."],
-      minlength: [4, "Product name must be at least 3 characters in length."]
+      required:  [true, "Please enter a product description."],
+      minlength: [4, "Product description must be at least 3 characters in length."]
     },
     price: {
       type: Number,
-      required:  [true, "Please enter a product name to add."],
-      minlength: [3, "Product name must be at least 3 characters in length."]
+      required:  [true, "Please enter the price of the product."],
+      minlength: [1, "Product price must be at least 3 characters in length."]
     },
     unit_in_stock: {
       type: Number,
-      required:  [true, "Please enter a product name to add."],
-      minlength: [3, "Product name must be at least 3 characters in length."]
+      required:  [true, "Please enter the amount in stock."],
+      minlength: [1, "Product units must be at least 1 characters in length."]
     }
   },
   { timestamps: true }
@@ -65,11 +71,17 @@ mongoose.Promise = global.Promise;
 // If we don't declare a get push, put or delete, or delete route, then it will come from the static file.
 app.use(express.static( __dirname + '/public/dist/public' ));
 
+// app.use(multer({dest: './uploads/',
+//   rename: function(fieldname, filename){
+
+//   }
+// }));
+
 // this gets ignored by express because public/dist/public/index.html exists
 // we told express.static to use that public file instead
-app.get('/index.html', (req, res)=> {
-  res.json({message: "this is my app route"});
-});
+// app.get('/index.html', (req, res)=> {
+//   res.json({message: "this is my app route"});
+// });
 
 // GETS ALL Products
 app.get('/api/products', (req, res)=> {
@@ -84,8 +96,15 @@ app.get('/api/products', (req, res)=> {
   })
 });
 
+// app.post(‘/api/photo’,function(req,res){
+//   var newItem = new Item();
+//   newItem.img.data = fs.readFileSync(req.files.userPhoto.path)
+//   newItem.img.contentType = ‘image/png’;
+//   newItem.save();
+//  });
+
 // CREATE NEW Product
-app.post('/api/products/add', (req, res)=> {
+app.post('/api/products/add', upload.single('file-to-upload'),(req, res)=> {
   let newProduct = new Product(req.body);
   console.log("creating a new product");
   newProduct.save((err, added)=> {
@@ -122,7 +141,12 @@ app.put('/api/products/:id', (req, res) => {
   console.log(`about to edit ${req.params.id} to ${req.body.name}`);
   Product.findByIdAndUpdate(
     req.params.id,
-    {$set: {name: req.body.name}},
+    {$set: {
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      unit_in_stock: req.body.unit_in_stock
+    }},
     // mongoose deprecation fix - see
     { new:true, useFindAndModify:false, 
       passRawResult: true, runValidators: true 
