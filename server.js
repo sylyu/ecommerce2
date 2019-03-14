@@ -5,6 +5,7 @@ mongoose		= require('mongoose'),
 path        = require('path'),
 multer      = require('multer');
 
+var port    = 8001;
 var upload=multer({
   dest:'src/assets/images/products/'
   // dest:'uploads/' // this saves your file into a directory  alled uploads
@@ -179,6 +180,6 @@ app.all("*", (req,res,next) => {
 });
 
 // tell the express app to listen on port 8001
-app.listen(8001, () => {
-  console.log("listening on port 8001");
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });
