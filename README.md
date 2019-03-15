@@ -33,30 +33,44 @@ It has a subdirectory /public that is an Angular git repo.
 3. `sudo npm install express --save`
 4. `sudo npm install body-parser --save`
 5. `sudo npm install mongoose --save`
-6. `npm init -y`
+6. `sudo npm install bcryptjs --save`
+7. `sudo npm install cors --save`
+8. `sudo npm install multer --save`
 
-  
+9. `npm init -y`
 
-       {  "name": "authors_part_deux",
-          "version": "1.0.0",
-          "main": "index.js",
-          "scripts": {
-            "test": "echo \"Error: no test specified\" && exit 1",
-            "start": "node server.js"
-       },
-       "keywords": [],
-       "author": "",
-       "license": "ISC",
-       "dependencies": {
-         "body-parser": "^1.18.3",
-          "express": "^4.16.4",
-          "mongoose": "^5.3.12"
-        },
-        "devDependencies": {},
-        "description": ""
-       }
+{
+  "name": "ecommerce2",
+  "version": "1.0.0",
+  "description": "This is the root folder of the project. It has a subdirectory /public that is an Angular git repo.",
+  "main": "server.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.16",
+    "multer": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sylyu/ecommerce2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sylyu/ecommerce2/issues"
+  },
+  "homepage": "https://github.com/sylyu/ecommerce2#readme"
+}
 
-7. Install angular project 
+
+10. Install angular project 
 - don't do sudo - will cause you to enter password every time.
 - this will take time to install
 `ng new public`

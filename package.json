@@ -1,20 +1,29 @@
 {
   "name": "ecommerce2",
   "version": "1.0.0",
+  "description": "This is the root folder of the project. It has a subdirectory /public that is an Angular git repo.",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "keywords": [],
-  "author": "Sylvia Yu",
-  "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mongoose": "^5.4.16",
     "multer": "^1.4.1"
   },
   "devDependencies": {},
-  "description": ""
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sylyu/ecommerce2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sylyu/ecommerce2/issues"
+  },
+  "homepage": "https://github.com/sylyu/ecommerce2#readme"
 }

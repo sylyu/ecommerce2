@@ -4,7 +4,6 @@ bodyParser	= require('body-parser'),
 mongoose		= require('mongoose'),
 path        = require('path'),
 multer      = require('multer');
-
 var port    = 8001;
 var upload=multer({
   dest:'src/assets/images/products/'
@@ -49,7 +48,6 @@ var ProductSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 
 // MODEL MUST BE NAMED THE SAME BELOW
 // connect to the database 
